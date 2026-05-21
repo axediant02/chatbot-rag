@@ -5,19 +5,20 @@
 1. Read relevant docs before implementation.
 2. Update docs first if behavior or architecture needs to change.
 3. Implement the smallest vertical slice that can be tested.
-4. Add or update tests with the change.
-5. Run backend and frontend checks before considering work complete.
+4. Add or update tests when test tooling exists.
+5. Run Prisma generation and app checks before considering work complete.
 6. Keep unrelated changes out of the same patch.
 
 ## Testing Strategy
 
-- Unit tests cover deterministic logic:
+- Unit-testable logic should cover:
   - chunking
   - metadata construction
   - prompt assembly
   - error mapping
   - filename sanitization
-- Integration tests cover local service boundaries:
+  - cosine similarity
+- Integration-style tests should cover local service boundaries when test tooling is added:
   - PDF upload and extraction
   - database persistence of uploaded PDF binaries and document metadata
   - indexing flow with mocked embeddings
@@ -32,7 +33,7 @@
 ## Quality Bar
 
 - Code should be simple enough for a new developer to trace upload and chat flows without guessing.
-- Public service methods should have predictable inputs and outputs.
+- Public service functions should have predictable inputs and outputs.
 - Error handling should produce useful frontend messages.
 - Tests should not depend on live OpenAI calls by default.
 - Live OpenAI calls should be limited to optional smoke tests.
@@ -40,9 +41,9 @@
 ## Git Practices
 
 - Keep commits focused by feature or fix.
-- Do not commit `.env`, local application database files, uploaded PDFs, Chroma data, virtual environments, dependency caches, or build output.
+- Do not commit `.env`, local database files, uploaded PDFs, virtual environments, dependency caches, or build output.
 - Prefer descriptive commit messages:
-  - `docs: add architecture and coding standards`
+  - `docs: align rag architecture with nextjs`
   - `feat: add pdf ingestion endpoint`
   - `test: cover chunk overlap behavior`
   - `fix: handle empty pdf extraction`
@@ -73,7 +74,7 @@
 
 - Add dependencies only when they directly support documented behavior.
 - Prefer established libraries with active maintenance.
-- Pin or lock dependencies once package management is initialized.
+- Pin or lock dependencies through `package-lock.json`.
 - Document why non-obvious dependencies are introduced.
 - Review OpenAI docs before changing API usage or model defaults.
 
@@ -81,16 +82,15 @@
 
 - Batch embedding requests where practical.
 - Avoid loading unnecessary full PDF text into responses.
-- Keep chunk text in vector storage, not frontend state.
-- Keep PDF binary content in the application database, not frontend state or logs.
-- Use retrieval limits to control prompt size.
+- Keep PDF binary content out of frontend state and logs.
+- Keep retrieval limits small to control prompt size.
 - Add pagination to document lists only if needed after MVP.
 
 ## Review Checklist
 
 - Does the change match the feature plan?
-- Does it preserve backend-only OpenAI access?
+- Does it preserve server-only OpenAI access?
 - Are errors typed and user-readable?
 - Are citations preserved for grounded answers?
-- Are tests added or updated for changed logic?
 - Are docs updated if behavior changed?
+- Do `npm run db:generate`, `npm run db:push`, `npm run build`, and `npm run lint` pass?
