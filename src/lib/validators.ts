@@ -7,3 +7,9 @@ export const contactSchema = z.object({
 })
 
 export type ContactInput = z.infer<typeof contactSchema>
+
+export const chatQuestionSchema = z.object({
+  question: z.string().trim().min(1, "Question is required.").max(2000, "Question is too long."),
+})
+
+export type ChatQuestionInput = z.infer<typeof chatQuestionSchema>

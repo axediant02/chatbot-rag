@@ -15,3 +15,39 @@ model ContactSubmission {
 
   @@index([createdAt])
 }
+
+model Document {
+  id               String          @id @default(cuid())
+  originalFilename String
+  contentType      String
+  fileSizeBytes    Int
+  pdfBlob          Bytes
+  sha256           String
+  pageCount        Int             @default(0)
+  chunkCount       Int             @default(0)
+  indexingStatus   String          @default("pending")
+  errorMessage     String?
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+  chunks           DocumentChunk[]
+
+  @@index([createdAt])
+  @@index([indexingStatus])
+  @@index([sha256])
+}
+
+model DocumentChunk {
+  id             String   @id @default(cuid())
+  documentId     String
+  pageNumber     Int
+  chunkIndex     Int
+  text           String
+  embedding      String
+  embeddingModel String
+  createdAt      DateTime @default(now())
+  document       Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+
+  @@unique([documentId, chunkIndex])
+  @@index([documentId])
+  @@index([pageNumber])
+}

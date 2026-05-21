@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Next.js Full-Stack Starter",
-  description: "Next.js, shadcn/ui, Tailwind, React Query, Zod, and Prisma starter environment.",
+  title: "Local PDF RAG Chatbot",
+  description: "Local-first PDF RAG chatbot with Next.js, Prisma, and OpenAI.",
 };
 
 export default function RootLayout({
